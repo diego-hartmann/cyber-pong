@@ -115,13 +115,21 @@ const ball = {
         this.dirX *= -1.
     },
     _calcPostion(){
-        // invert y if colide with floor or roof
+
+        // verify if player scored
+        if(this.x > field.getWidth());
+
+
+        // verify if PC scored
+        if(this.x < 0);
+
+        // invert Y if hits floor or roof
         const onTop = this.y > field.getHeight() - this.r;
         const onBottom = this.y < 0 + this.r; 
         if( onTop || onBottom )
             return this._reverseY();
         
-        // invert x if colide with player
+        // invert X if hits player
         const hitedPlayer = this.x < 0 + this.r + 30;
         const hitedPC =  this.x > field.getWidth() - this.r - 30;
         if( hitedPlayer || hitedPC )
