@@ -1,6 +1,12 @@
 const canvas = document.getElementById('game');
 const canvasCtx = canvas?.getContext('2d');
 
+
+function ramdom(min, max) {
+    return Math.random() * (max - min) + min;
+};
+
+
 const mouse = {
     x: 0,
     y: 0
@@ -115,6 +121,14 @@ const ball = {
     dirX: 1,
     dirY : 1,
     gapX : 15,
+    _speedUp(num){
+        if(this.speed >= 19) return this.speed = 20;
+        this.speed = this.speed += num;
+        console.log(this.speed);
+    },
+    _speedReset(){
+        this.speed = 5;
+    },
     _reverseY(){
         this.dirY *= -1;
     },
@@ -124,6 +138,7 @@ const ball = {
     _recenter(){
         this.x = field.getWidth() / 2;
         this.y = field.getHeight() / 2;
+        this._reverseX();
     },
     _calcPostion(){
 
@@ -135,12 +150,13 @@ const ball = {
                 ((this.y - this.r) < (player2.racket.y + player2.racket.h))
             ){
                 this._reverseX();
+                this._speedUp(1);
             }else{ // PC misses ball?
                 player1.score.increment();
                 this._recenter();
+                this._speedReset();
             }
         }
-
 
 
         // ball hits player field?
@@ -150,9 +166,11 @@ const ball = {
                 this.y - this.r < player1.racket.y + player1.racket.h
             ){
                 this._reverseX();
+                this._speedUp(0.1);
             }else{ // player misses ball?
                 player2.score.increment();
                 this._recenter();
+                this._speedReset();
             }
         }
         
@@ -163,7 +181,6 @@ const ball = {
         const onBottom = this.y < 0 + this.r; 
         if( onTop || onBottom )
             return this._reverseY();
-
        
     },
     _move(){
