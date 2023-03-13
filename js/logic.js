@@ -1,6 +1,10 @@
 const canvas = document.getElementById('game');
 const canvasCtx = canvas?.getContext('2d');
 
+const mouse = {
+    x: 0,
+    y: 0
+}
 
 const field = {
     // functions for dynamic size based on resize
@@ -44,6 +48,10 @@ const player1 = {
         draw(){
             canvasCtx.fillStyle = "#ffffff";
             canvasCtx.fillRect( 10, this.y, this.w, this.h );
+            this.move();
+        },
+        move(){
+            this.y = mouse.y - this.h / 2;
         }
     },
     score:{
@@ -62,6 +70,7 @@ const player1 = {
     } 
 
 }
+
 const player2 = {
     racket:{
         w:15,
@@ -70,6 +79,10 @@ const player2 = {
         draw(){
             canvasCtx.fillStyle = "#ffffff";
             canvasCtx.fillRect( field.getWidth() - 15 - 10, this.y, this.w, this.h );
+            this.move();
+        },
+        move(){
+            this.y = ball.y - this.h / 2;
         }
     },
     score: {
@@ -98,7 +111,7 @@ const ball = {
         canvasCtx.beginPath();
         canvasCtx.arc(this.x, this.y, this.r, 0, (Math.PI*2), false);
         canvasCtx.fill();
-        this.move(1,0);
+        this.move(1, 0.1);
     },
     move(x, y){
         this.x += x * this.speed;
@@ -148,3 +161,9 @@ game.setup(); // first setup
     animateFrame(main); // loop the init function (recursive)
     game.draw(); // draw each frame
 })()
+
+// update mouse object position
+canvas.addEventListener('mousemove', (e)=>{
+    mouse.x = e.pageX;
+    mouse.y = e.pageY;
+})
