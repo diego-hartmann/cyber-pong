@@ -56,6 +56,9 @@ const player1 = {
     },
     score:{
         value: 0,
+        increment(){
+            this.value = this.value + 1;
+        },
         draw(){
             canvasCtx.font = "bold 72px Arial";
             canvasCtx.textAlign = "center";
@@ -87,6 +90,9 @@ const player2 = {
     },
     score: {
         value: 0,
+        increment(){
+            this.value = this.value + 1;
+        },
         draw(){
             canvasCtx.font = "bold 72px Arial";
             canvasCtx.textAlign = "center";
@@ -108,32 +114,57 @@ const ball = {
     speed: 5,
     dirX: 1,
     dirY : 1,
+    gapX : 15,
     _reverseY(){
         this.dirY *= -1;
     },
     _reverseX(){
         this.dirX *= -1.
     },
+    _recenter(){
+        this.x = field.getWidth() / 2;
+        this.y = field.getHeight() / 2;
+    },
     _calcPostion(){
 
-        // verify if player scored
-        if(this.x > field.getWidth());
+        // ball hits PC field?
+        if(this.x > (field.getWidth() - this.r - player2.racket.w - this.gapX)){
+            
+            if( // PC hits ball?
+                ((this.y + this.r) > player2.racket.y) && 
+                ((this.y - this.r) < (player2.racket.y + player2.racket.h))
+            ){
+                this._reverseX();
+            }else{ // PC misses ball?
+                player1.score.increment();
+                this._recenter();
+            }
+        }
 
 
-        // verify if PC scored
-        if(this.x < 0);
+
+        // ball hits player field?
+        if(this.x < this.r + player1.racket.w + this.gapX){
+            if( // player hits ball?
+                this.y + this.r > player1.racket.y &&
+                this.y - this.r < player1.racket.y + player1.racket.h
+            ){
+                this._reverseX();
+            }else{ // player misses ball?
+                player2.score.increment();
+                this._recenter();
+            }
+        }
+        
+        
 
         // invert Y if hits floor or roof
         const onTop = this.y > field.getHeight() - this.r;
         const onBottom = this.y < 0 + this.r; 
         if( onTop || onBottom )
             return this._reverseY();
-        
-        // invert X if hits player
-        const hitedPlayer = this.x < 0 + this.r + 30;
-        const hitedPC =  this.x > field.getWidth() - this.r - 30;
-        if( hitedPlayer || hitedPC )
-            return this._reverseX();
+
+       
     },
     _move(){
         this.x += this.speed * this.dirX;
