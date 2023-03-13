@@ -48,9 +48,9 @@ const player1 = {
         draw(){
             canvasCtx.fillStyle = "#ffffff";
             canvasCtx.fillRect( 10, this.y, this.w, this.h );
-            this.move();
+            this._move();
         },
-        move(){
+        _move(){
             this.y = mouse.y - this.h / 2;
         }
     },
@@ -79,9 +79,9 @@ const player2 = {
         draw(){
             canvasCtx.fillStyle = "#ffffff";
             canvasCtx.fillRect( field.getWidth() - 15 - 10, this.y, this.w, this.h );
-            this.move();
+            this._move();
         },
-        move(){
+        _move(){
             this.y = ball.y - this.h / 2;
         }
     },
@@ -102,21 +102,44 @@ const player2 = {
 }
 
 const ball = {
-    x: 300,
+    x: 100,
     y: 200,
     r: 20,
     speed: 5,
+    dirX: 1,
+    dirY : 1,
+    _reverseY(){
+        this.dirY *= -1;
+    },
+    _reverseX(){
+        this.dirX *= -1.
+    },
+    _calcPostion(){
+        // invert y if colide with floor or roof
+        const onTop = this.y > field.getHeight() - this.r;
+        const onBottom = this.y < 0 + this.r; 
+        if( onTop || onBottom )
+            return this._reverseY();
+        
+        // invert x if colide with player
+        const hitedPlayer = this.x < 0 + this.r + 30;
+        const hitedPC =  this.x > field.getWidth() - this.r - 30;
+        if( hitedPlayer || hitedPC )
+            return this._reverseX();
+    },
+    _move(){
+        this.x += this.speed * this.dirX;
+        this.y += this.speed * this.dirY;
+    },
     draw(){
         canvasCtx.fillStyle = "#ffffff";
         canvasCtx.beginPath();
         canvasCtx.arc(this.x, this.y, this.r, 0, (Math.PI*2), false);
         canvasCtx.fill();
-        this.move(1, 0.1);
+
+        this._calcPostion();
+        this._move();
     },
-    move(x, y){
-        this.x += x * this.speed;
-        this.y += y * this.speed;
-    }
 }
 
 const game = {
@@ -158,11 +181,11 @@ window.animateFrame = (()=>{
 game.setup(); // first setup
 
 (function main(){ // creating and calling the init function
-    animateFrame(main); // loop the init function (recursive)
+    animateFrame(main); // loop this init function (recursive) through the api
     game.draw(); // draw each frame
 })()
 
-// update mouse object position
+// update mouse object position to update player1 position
 canvas.addEventListener('mousemove', (e)=>{
     mouse.x = e.pageX;
     mouse.y = e.pageY;
