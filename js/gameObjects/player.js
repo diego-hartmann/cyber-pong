@@ -2,6 +2,7 @@ import { canvasCtx } from "../context/canvas.js";
 import { mouse } from "../context/mouse.js";
 import { field } from "../context/field.js";
 import { ball } from "./ball.js";
+import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 
 export const player1 = {
     racket:{
@@ -52,6 +53,7 @@ export const player2 = {
         _move(){
             const passedMiddle = ball.x > field.getWidth() / 2;
             if(!passedMiddle) return;
+            // if(lastPlayerThatHitedBall.get() === player2) return;
             if(this.y + this.h / 2 < ball.y + ball.r){
                 this.y += this.speed;
                 return;

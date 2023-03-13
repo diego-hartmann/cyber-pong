@@ -1,5 +1,6 @@
 import { canvasCtx } from "../context/canvas.js";
 import { field } from "../context/field.js";
+import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 import { player1, player2 } from "./player.js";
 
 export const ball = {
@@ -44,6 +45,7 @@ export const ball = {
                 this._reverseX();
                 this._speedUp();
                 player2.racket.speedUp();
+                lastPlayerThatHitedBall.set(player2);
             }else{ // PC misses ball?
                 player1.score.increment();
                 this._recenter();
@@ -61,6 +63,7 @@ export const ball = {
             ){
                 this._reverseX();
                 this._speedUp();
+                lastPlayerThatHitedBall.set(player1);
             }else{ // player misses ball?
                 player2.score.increment();
                 this._recenter();
