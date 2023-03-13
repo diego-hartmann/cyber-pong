@@ -42,13 +42,32 @@ export const player2 = {
         w:15,
         h:200,
         y: 200,
+        speed: 7,
+        
         draw(){
             canvasCtx.fillStyle = "#ffffff";
             canvasCtx.fillRect( field.getWidth() - 15 - 10, this.y, this.w, this.h );
             this._move();
         },
         _move(){
-            this.y = ball.y - this.h / 2;
+            const passedMiddle = ball.x > field.getWidth() / 2;
+            if(!passedMiddle) return;
+            if(this.y + this.h / 2 < ball.y + ball.r){
+                this.y += this.speed;
+                return;
+            }
+            this.y -= this.speed;
+        },
+        speedUp(){
+            if(this.speed < 40){
+                this.speed = this.speed += 0.9;
+                if(this.speed > 40){
+                    this.speed = 40;
+                }
+            }
+        },
+        resetSpeed(){
+            this.speed = 7;
         }
     },
     score: {

@@ -43,10 +43,12 @@ export const ball = {
             ){
                 this._reverseX();
                 this._speedUp();
+                player2.racket.speedUp();
             }else{ // PC misses ball?
                 player1.score.increment();
                 this._recenter();
                 this._speedReset();
+                player2.racket.resetSpeed();
             }
         }
 
