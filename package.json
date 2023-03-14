@@ -1,0 +1,21 @@
+{
+  "name": "cyber-pong",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/diego-hartmann/Pong.git",
+  "author": "diego-hartmann <dtghartmann@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "master-pitch": "^1.0.1",
+    "typescript": "~4.5.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "^9.1.2",
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.76.1",
+    "webpack-cli": "^5.0.1"
+  }
+}
