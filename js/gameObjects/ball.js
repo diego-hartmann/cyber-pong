@@ -4,31 +4,18 @@ import { player1, player2 } from "./player.js";
 import { random } from "../utils/ramdom.js";
 import { PlayerEffect } from "../input/PlayerEffect.js";
 
-const context = new AudioContext();
+// impporting my own lib to change song pitch
+import { load, play } from '/node_modules/master-pitch/index.js';
 
-function loadSample(url){
-    return fetch(url)
-    .then(response => response.arrayBuffer())
-    .then(buffer => context.decodeAudioData(buffer));
-}
-
-function playSample(sample, sampleNote, noteToPlay) {
-    const source = context.createBufferSource();
-    source.buffer = sample;
-    source.playbackRate.value = 2 ** ((noteToPlay - sampleNote) / 12);
-    source.connect(context.destination);
-    source.start(0);
-}
 
 const scorePlayer = new Audio('../../mp3/scorePlayer.mp3');
 const scorePC = new Audio('../../mp3/scorePC.mp3');
 const impact = new Audio('../../mp3/impact.mp3');
 const success = new Audio('../../mp3/success_1.mp3');
 
-const hit = await loadSample('../../mp3/pong_1.mp3');
+const hit = await load('../../mp3/pong_1.mp3');
 
 let lastPlayerThatHitedBall = 0;
-
 
 let playerEffect = false;
 PlayerEffect( () => playerEffect = true, () => playerEffect = false);
@@ -80,7 +67,7 @@ export const ball = {
                 ((this.y + this.r) > player2.racket.y) && 
                 ((this.y - this.r) < (player2.racket.y + player2.racket.h))
             ){
-                playSample(hit, 60, random(45, 50));
+                play(hit, 60, random(45, 50));
                 this._reverseX();
                 this.dirY = random(0, 1.5);
                 PCEffect && this._reverseY();
@@ -108,7 +95,7 @@ export const ball = {
             this.y - this.r < player1.racket.y + player1.racket.h
             ){
                 hit.pitch = .5;
-                playSample(hit, 60, random(55, 60));
+                play(hit, 60, random(55, 60));
                 this._reverseX();
                 this.dirY = random(0, 1.5);
                 this._speedUp();
@@ -128,8 +115,10 @@ export const ball = {
         // invert Y if hits floor or roof
         const onTop = this.y > field.getHeight() - this.r;
         const onBottom = this.y < 0 + this.r; 
-        if( onTop || onBottom )
-            return this._reverseY();
+        if( onTop || onBottom ){
+            play(hit, 60, random(20, 30));
+            this._reverseY();
+        }
        
     },
     _move(){
