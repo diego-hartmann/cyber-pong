@@ -4,9 +4,8 @@ import { player1, player2 } from "./player.js";
 import { random } from "../utils/ramdom.js";
 import { PlayerEffect } from "../input/PlayerEffect.js";
 
-// impporting my own lib to change song pitch
-import { load, play } from '/node_modules/master-pitch/index.js';
-
+// importing my own lib to change song pitch
+import { load, play } from "../lib/master-pitch.js";
 
 const scorePlayer = new Audio('../../mp3/scorePlayer.mp3');
 const scorePC = new Audio('../../mp3/scorePC.mp3');
@@ -94,7 +93,6 @@ export const ball = {
             this.y + this.r > player1.racket.y &&
             this.y - this.r < player1.racket.y + player1.racket.h
             ){
-                hit.pitch = .5;
                 play(hit, 60, random(55, 60));
                 this._reverseX();
                 this.dirY = random(0, 1.5);

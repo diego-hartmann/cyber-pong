@@ -24,4 +24,3 @@ window.animateFrame = (()=>{
     animateFrame(main); // loop this init function (recursive) through the api
     game.draw(); // draw each frame
 })()
-

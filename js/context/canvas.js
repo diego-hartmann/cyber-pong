@@ -1,6 +1,6 @@
 import { mouse } from "../input/mouse.js";
 
-export const canvas = document.getElementById('game');
+export const canvas = document?.querySelector('canvas');
 export const canvasCtx = canvas?.getContext('2d');
 
 // update mouse object position to update player1 position
