@@ -1,15 +1,39 @@
 import { canvasCtx } from "../context/canvas.js";
 import { field } from "../context/field.js";
-import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 import { player1, player2 } from "./player.js";
 import { random } from "../utils/ramdom.js";
 import { PlayerEffect } from "../input/PlayerEffect.js";
 
-export let playerEffect = false;
+const context = new AudioContext();
 
+function loadSample(url){
+    return fetch(url)
+    .then(response => response.arrayBuffer())
+    .then(buffer => context.decodeAudioData(buffer));
+}
+
+function playSample(sample, sampleNote, noteToPlay) {
+    const source = context.createBufferSource();
+    source.buffer = sample;
+    source.playbackRate.value = 2 ** ((noteToPlay - sampleNote) / 12);
+    source.connect(context.destination);
+    source.start(0);
+}
+
+const scorePlayer = new Audio('../../mp3/scorePlayer.mp3');
+const scorePC = new Audio('../../mp3/scorePC.mp3');
+const impact = new Audio('../../mp3/impact.mp3');
+const success = new Audio('../../mp3/success_1.mp3');
+
+const hit = await loadSample('../../mp3/pong_1.mp3');
+
+let lastPlayerThatHitedBall = 0;
+
+
+let playerEffect = false;
 PlayerEffect( () => playerEffect = true, () => playerEffect = false);
 
-export let PCEffect = false;
+let PCEffect = false;
 
 export const ball = {
     x: field.getWidth() / 2,
@@ -36,10 +60,16 @@ export const ball = {
     _reverseX(){
         this.dirX *= -1;
     },
+    _disable(){
+
+    },
+    _enable(){
+
+    },
     _recenter(){
-        this.x = field.getWidth() / 2;
-        this.y = field.getHeight() / 2;
         this._reverseX();
+        this.x = field.getWidth() / 2;
+        this.y = field.getHeight() / 2;                   
     },
     _calcPostion(){
 
@@ -50,17 +80,23 @@ export const ball = {
                 ((this.y + this.r) > player2.racket.y) && 
                 ((this.y - this.r) < (player2.racket.y + player2.racket.h))
             ){
+                playSample(hit, 60, random(45, 50));
                 this._reverseX();
                 this.dirY = random(0, 1.5);
                 PCEffect && this._reverseY();
                 this._speedUp();
                 player2.racket.speedUp();
-                lastPlayerThatHitedBall.set(player2);
+                lastPlayerThatHitedBall = 2;
             }else{ // PC misses ball?
-                player1.score.increment();
                 this._recenter();
                 this._speedReset();
                 player2.racket.resetSpeed();
+
+                success.play();
+                setTimeout(() => {
+                    player1.score.increment();
+                    scorePlayer.play();
+                }, 500);
             }
         }
 
@@ -68,18 +104,24 @@ export const ball = {
         // ball hits player field?
         if(this.x < this.r + player1.racket.w + this.gapX){
             if( // player hits ball?
-                this.y + this.r > player1.racket.y &&
-                this.y - this.r < player1.racket.y + player1.racket.h
+            this.y + this.r > player1.racket.y &&
+            this.y - this.r < player1.racket.y + player1.racket.h
             ){
+                hit.pitch = .5;
+                playSample(hit, 60, random(55, 60));
                 this._reverseX();
                 this.dirY = random(0, 1.5);
                 this._speedUp();
                 playerEffect && this._reverseY();
-                lastPlayerThatHitedBall.set(player1);
+                lastPlayerThatHitedBall = 1;
             }else{ // player misses ball?
-                player2.score.increment();
                 this._recenter();
                 this._speedReset();
+                impact.play();
+                setTimeout(()=>{
+                    player2.score.increment();
+                    scorePC.play();
+                }, 500)
             }
         }
 
@@ -96,9 +138,12 @@ export const ball = {
     },
     draw(){
         canvasCtx.fillStyle = "#ffffff";
+        // canvasCtx.shadowColor = lastPlayerThatHitedBall === 1 ? "green" : "red";
+        canvasCtx.shadowColor = "#fff";
         canvasCtx.beginPath();
         canvasCtx.arc(this.x, this.y, this.r, 0, (Math.PI*2), false);
         canvasCtx.fill();
+
 
         this._calcPostion();
         this._move();

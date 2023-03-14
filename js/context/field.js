@@ -5,7 +5,8 @@ export const field = {
     getWidth:  () => window.innerWidth,
     getHeight: () => window.innerHeight,
     draw(){
-        canvasCtx.fillStyle = "#286047";
+        canvasCtx.fillStyle = "#323232";
+        canvasCtx.shadowBlur = 50;
         canvasCtx.fillRect( 0, 0, this.getWidth(), this.getHeight());
     }
 }

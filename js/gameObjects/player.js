@@ -2,7 +2,6 @@ import { canvasCtx } from "../context/canvas.js";
 import { mouse } from "../input/mouse.js";
 import { field } from "../context/field.js";
 import { ball } from "./ball.js";
-// import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 
 export const player1 = {
     racket:{
@@ -10,8 +9,9 @@ export const player1 = {
         h:200,
         y: 200,
         draw(){
-            canvasCtx.fillStyle = "#ffffff";
-            canvasCtx.fillRect( 10, this.y, this.w, this.h );
+            canvasCtx.shadowColor = "green";
+            canvasCtx.fillStyle = "#fff";
+            canvasCtx.fillRect(10, this.y, this.w, this.h );
             this._move();
         },
         _move(){
@@ -27,7 +27,7 @@ export const player1 = {
             canvasCtx.font = "bold 72px Arial";
             canvasCtx.textAlign = "center";
             canvasCtx.textBaseline = "top";
-            canvasCtx.fillStyle = "#01341D";
+            canvasCtx.fillStyle = "#ccc";
             canvasCtx.fillText(this.value.toString(), field.getWidth()/4, 50)
         }
     },
@@ -46,13 +46,13 @@ export const player2 = {
         
         draw(){
             canvasCtx.fillStyle = "#ffffff";
+            canvasCtx.shadowColor = "red";
             canvasCtx.fillRect( field.getWidth() - 15 - 10, this.y, this.w, this.h );
             this._move();
         },
         _move(){
             const passedMiddle = ball.x > field.getWidth() / 2;
             if(!passedMiddle) return;
-            // if(lastPlayerThatHitedBall.get() === player2) return;
             if(this.y + this.h / 2 < ball.y + ball.r){
                 this.y += this.speed;
                 return;
@@ -80,7 +80,7 @@ export const player2 = {
             canvasCtx.font = "bold 72px Arial";
             canvasCtx.textAlign = "center";
             canvasCtx.textBaseline = "top";
-            canvasCtx.fillStyle = "#01341D";
+            canvasCtx.fillStyle = "#ccc";
             canvasCtx.fillText(this.value.toString(), field.getWidth()/4 + field.getWidth()/2, 50)
         }
     },
