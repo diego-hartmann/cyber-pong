@@ -60,10 +60,10 @@ export const player2 = {
             this.y -= this.speed;
         },
         speedUp(){
-            if(this.speed < 35){
-                this.speed = this.speed += 0.85;
-                if(this.speed > 35){
-                    this.speed = 35;
+            if(this.speed < 10){
+                this.speed = this.speed += 0.8;
+                if(this.speed > 10){
+                    this.speed = 10;
                 }
             }
         },

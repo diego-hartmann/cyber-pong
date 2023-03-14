@@ -3,27 +3,11 @@ import { field } from "../context/field.js";
 import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 import { player1, player2 } from "./player.js";
 import { random } from "../utils/ramdom.js";
+import { PlayerEffect } from "../input/PlayerEffect.js";
 
 export let playerEffect = false;
 
-
-window.addEventListener('keydown', event => {
-    switch(event.code){
-        case 'Space': playerEffect = true;
-        break;
-        default:
-            break;
-        }
-    });
-    
-    window.addEventListener('keyup', event => {
-        switch(event.code){
-        case 'Space': playerEffect = false;
-            break;
-            default:
-                break;
-    }
-});
+PlayerEffect( () => playerEffect = true, () => playerEffect = false);
 
 export let PCEffect = false;
 
@@ -36,10 +20,10 @@ export const ball = {
     dirY : 1,
     gapX : 15,
     _speedUp(){
-        if(this.speed < 40){
+        if(this.speed < 20){
             this.speed = this.speed += 1;
-            if(this.speed > 40){
-                this.speed = 40;
+            if(this.speed > 20){
+                this.speed = 20;
             }
         }
     },
@@ -67,7 +51,7 @@ export const ball = {
                 ((this.y - this.r) < (player2.racket.y + player2.racket.h))
             ){
                 this._reverseX();
-                this.dirY = this.dirY + random(-1, 1);
+                this.dirY = random(0, 1.5);
                 PCEffect && this._reverseY();
                 this._speedUp();
                 player2.racket.speedUp();
@@ -88,7 +72,7 @@ export const ball = {
                 this.y - this.r < player1.racket.y + player1.racket.h
             ){
                 this._reverseX();
-                this.dirY = this.dirY + random(-1, 1);
+                this.dirY = random(0, 1.5);
                 this._speedUp();
                 playerEffect && this._reverseY();
                 lastPlayerThatHitedBall.set(player1);
@@ -98,8 +82,6 @@ export const ball = {
                 this._speedReset();
             }
         }
-
-        console.log(this.dirY)
 
         // invert Y if hits floor or roof
         const onTop = this.y > field.getHeight() - this.r;
