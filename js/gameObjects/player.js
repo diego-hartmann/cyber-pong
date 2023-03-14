@@ -1,8 +1,8 @@
 import { canvasCtx } from "../context/canvas.js";
-import { mouse } from "../context/mouse.js";
+import { mouse } from "../input/mouse.js";
 import { field } from "../context/field.js";
 import { ball } from "./ball.js";
-import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
+// import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 
 export const player1 = {
     racket:{
@@ -35,7 +35,6 @@ export const player1 = {
         this.racket.draw();
         this.score.draw();
     } 
-
 }
 
 export const player2 = {
@@ -61,10 +60,10 @@ export const player2 = {
             this.y -= this.speed;
         },
         speedUp(){
-            if(this.speed < 40){
-                this.speed = this.speed += 0.9;
-                if(this.speed > 40){
-                    this.speed = 40;
+            if(this.speed < 35){
+                this.speed = this.speed += 0.85;
+                if(this.speed > 35){
+                    this.speed = 35;
                 }
             }
         },

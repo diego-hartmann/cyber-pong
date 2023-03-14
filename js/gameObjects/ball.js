@@ -2,6 +2,30 @@ import { canvasCtx } from "../context/canvas.js";
 import { field } from "../context/field.js";
 import { lastPlayerThatHitedBall } from "../context/lastPlayerThatHitedBall.js";
 import { player1, player2 } from "./player.js";
+import { random } from "../utils/ramdom.js";
+
+export let playerEffect = false;
+
+
+window.addEventListener('keydown', event => {
+    switch(event.code){
+        case 'Space': playerEffect = true;
+        break;
+        default:
+            break;
+        }
+    });
+    
+    window.addEventListener('keyup', event => {
+        switch(event.code){
+        case 'Space': playerEffect = false;
+            break;
+            default:
+                break;
+    }
+});
+
+export let PCEffect = false;
 
 export const ball = {
     x: field.getWidth() / 2,
@@ -26,7 +50,7 @@ export const ball = {
         this.dirY *= -1;
     },
     _reverseX(){
-        this.dirX *= -1.
+        this.dirX *= -1;
     },
     _recenter(){
         this.x = field.getWidth() / 2;
@@ -43,6 +67,8 @@ export const ball = {
                 ((this.y - this.r) < (player2.racket.y + player2.racket.h))
             ){
                 this._reverseX();
+                this.dirY = this.dirY + random(-1, 1);
+                PCEffect && this._reverseY();
                 this._speedUp();
                 player2.racket.speedUp();
                 lastPlayerThatHitedBall.set(player2);
@@ -62,7 +88,9 @@ export const ball = {
                 this.y - this.r < player1.racket.y + player1.racket.h
             ){
                 this._reverseX();
+                this.dirY = this.dirY + random(-1, 1);
                 this._speedUp();
+                playerEffect && this._reverseY();
                 lastPlayerThatHitedBall.set(player1);
             }else{ // player misses ball?
                 player2.score.increment();
@@ -70,6 +98,8 @@ export const ball = {
                 this._speedReset();
             }
         }
+
+        console.log(this.dirY)
 
         // invert Y if hits floor or roof
         const onTop = this.y > field.getHeight() - this.r;

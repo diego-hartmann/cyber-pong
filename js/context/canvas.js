@@ -1,4 +1,4 @@
-import { mouse } from "./mouse.js";
+import { mouse } from "../input/mouse.js";
 
 export const canvas = document.getElementById('game');
 export const canvasCtx = canvas?.getContext('2d');
